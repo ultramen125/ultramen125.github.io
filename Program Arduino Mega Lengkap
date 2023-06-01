@@ -1,1 +1,393 @@
 
+#include <Keypad.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <TM1637Display.h>
+
+#define CLK 7
+#define DIO 6
+int password = 4567;
+String inputpass;
+int kondisi = 0;
+int a = 0, b = 0, c = 0, d = 0;
+int total;
+const byte ROWS = 4; //four rows
+const byte COLS = 4; //four columns
+//define the cymbols on the buttons of the keypads
+char hexaKeys[ROWS][COLS] = {
+  {'1', '2', '3', 'A'},
+  {'4', '5', '6', 'B'},
+  {'7', '8', '9', 'C'},
+  {'*', '0', '#', 'D'}
+};
+byte rowPins[ROWS] = {11, 10, 9, 8}; //connect to the row pinouts of the keypad
+byte colPins[COLS] = {5, 4, 3, 2}; //connect to the column pinouts of the keypad
+
+TM1637Display display(CLK, DIO);
+
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+//initialize an instance of class NewKeypad
+Keypad customKeypad = Keypad( makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
+
+int cursorColumn = 0;
+int potPin = A2;
+int val = 0;
+int ledM = 22;
+int ledY = 23;
+int ledK = 24;
+const int TRIGPIN = 26;
+const int ECHOPIN = 27;
+int count = 9999;
+int down = 20;
+const int pinBuzzer = 12;
+
+void setup()
+{
+  pinMode(ledM, OUTPUT);
+  pinMode(ledY, OUTPUT);
+  pinMode(ledK, OUTPUT);
+
+  pinMode(ECHOPIN, INPUT);
+  pinMode(TRIGPIN, OUTPUT);
+  lcd.init();
+  lcd.backlight();
+  display.showNumberDec(0, true);
+  display.setBrightness(4);
+  lcd.setCursor(7, 1);
+
+  lcd.print("WELCOME:");
+  digitalWrite(ledK, HIGH);
+  digitalWrite(ledY, HIGH);
+  digitalWrite(ledM, HIGH);
+  digitalWrite(pinBuzzer, HIGH);
+  delay (500);
+  digitalWrite(ledK, LOW);
+  digitalWrite(ledY, LOW);
+  digitalWrite(ledM, LOW);
+  digitalWrite(pinBuzzer, LOW);
+  delay (500);
+  digitalWrite(ledK, HIGH);
+  digitalWrite(ledY, HIGH);
+  digitalWrite(ledM, HIGH);
+  digitalWrite(pinBuzzer, HIGH);
+  delay (500);
+  digitalWrite(ledK, LOW);
+  digitalWrite(ledY, LOW);
+  digitalWrite(ledM, LOW);
+  digitalWrite(pinBuzzer, LOW);
+  delay (500);
+  digitalWrite(ledK, HIGH);
+  digitalWrite(ledY, HIGH);
+  digitalWrite(ledM, HIGH);
+  digitalWrite(pinBuzzer, HIGH);
+  delay (500);
+  digitalWrite(ledK, LOW);
+  digitalWrite(ledY, LOW);
+  digitalWrite(ledM, LOW);
+  digitalWrite(pinBuzzer, LOW);
+  delay (500);
+
+  lcd.clear();
+  lcd.setCursor(0, 0);               // print key at (cursorColumn, 0)
+  lcd.print("Enter Password:");
+
+
+
+}
+
+void loop()
+{
+  while (kondisi == 0)
+  {
+    lcd.setCursor(0, 0);               // print key at (cursorColumn, 0)
+    lcd.print("Enter Password:");
+
+    char customKey = customKeypad.getKey();
+    if (customKey)
+    {
+      if (customKey != 'A' && customKey != 'B' && customKey != 'C' && customKey != 'D' && customKey != '#' && customKey != '*' )
+      {
+        if (customKey == '0')
+        {
+          a = b;
+          b = c;
+          c = d;
+          d = 0;
+          total = (a * 1000) + (b * 100) + (c * 10) + d;
+
+        }
+        else if (customKey == '1')
+        {
+          a = b;
+          b = c;
+          c = d;
+          d = 1;
+          total = (a * 1000) + (b * 100) + (c * 10) + d;
+
+        }
+        else if (customKey == '2')
+        {
+          a = b;
+          b = c;
+          c = d;
+          d = 2;
+          total = (a * 1000) + (b * 100) + (c * 10) + d;
+
+        }
+        else if (customKey == '3')
+        {
+          a = b;
+          b = c;
+          c = d;
+          d = 3;
+          total = (a * 1000) + (b * 100) + (c * 10) + d;
+
+        }
+        else if (customKey == '4')
+        {
+          a = b;
+          b = c;
+          c = d;
+          d = 4;
+          total = (a * 1000) + (b * 100) + (c * 10) + d;
+
+        }
+        else if (customKey == '5')
+        {
+          a = b;
+          b = c;
+          c = d;
+          d = 5;
+          total = (a * 1000) + (b * 100) + (c * 10) + d;
+
+        }
+        else if (customKey == '6')
+        {
+          a = b;
+          b = c;
+          c = d;
+          d = 6;
+          total = (a * 1000) + (b * 100) + (c * 10) + d;
+
+        }
+        else if (customKey == '7')
+        {
+          a = b;
+          b = c;
+          c = d;
+          d = 7;
+          total = (a * 1000) + (b * 100) + (c * 10) + d;
+
+        }
+        else if (customKey == '8')
+        {
+          a = b;
+          b = c;
+          c = d;
+          d = 8;
+          total = (a * 1000) + (b * 100) + (c * 10) + d;
+
+        }
+        else if (customKey == '9')
+        {
+          a = b;
+          b = c;
+          c = d;
+          d = 9;
+          total = (a * 1000) + (b * 100) + (c * 10) + d;
+
+        }
+      }
+      else if (customKey == 'D')
+      {
+        if ( total == password )
+        {
+          digitalWrite(ledK, HIGH);
+          digitalWrite(ledK, LOW);
+          delay (500);
+          digitalWrite(ledK, HIGH);
+          digitalWrite(ledK, LOW);
+          delay (500);
+          digitalWrite(ledK, HIGH);
+          digitalWrite(ledK, LOW);
+          delay (500);
+          kondisi = 1;
+          a = b = c = d = total = 0;
+          display.showNumberDec(total, true);
+
+          lcd.clear();
+        }
+
+        else
+        {
+          lcd.setCursor(0, 0);               // print key at (cursorColumn, 0)
+          lcd.print("Password Salah");
+          delay (3000);
+          lcd.clear();
+          a = b = c = d = total = 0;
+          display.showNumberDec(total, true);
+          kondisi = 0;
+        }
+      }
+      else if (customKey == 'C')
+      {
+
+        a = b = c = d = total = 0;
+      }
+    }
+    display.showNumberDec(total, true);
+  }
+  while (kondisi == 1)
+  {
+
+    char customKey = customKeypad.getKey();
+
+    lcd.setCursor(0, 0);              // print key at (cursorColumn, 0)
+    lcd.print("Pilihan :");
+    lcd.setCursor(0, 1);
+    lcd.print("1. Potensio");
+    lcd.setCursor(0, 2);
+    lcd.print("2. Sensor ");
+    lcd.setCursor(0, 3);
+    lcd.print("3. count (up / down ");
+
+    if ( customKey == '1')
+    {
+      kondisi = 2;
+      lcd.clear();
+    }
+    if ( customKey == '2')
+    {
+      lcd.clear();
+      kondisi = 3;
+
+    }
+    if ( customKey == '3')
+    {
+      lcd.clear();
+      kondisi = 5;
+
+    }
+
+  }
+  while (kondisi == 2)
+  {
+    char customKey = customKeypad.getKey();
+
+    int a = analogRead(potPin);            // reads the value of the potentiometer (value between 0 and 1023)
+    int b = map(a, 0, 1023, 0, 100);
+    lcd.setCursor(0, 0);              // print key at (cursorColumn, 0)
+    lcd.print(" Potensio ");
+    lcd.setCursor(0, 1);
+    lcd.print (" Pot : ");
+    lcd.print(a);
+    lcd.print("       ");
+    lcd.setCursor(0, 2);
+    lcd.print (" Map : ");
+    lcd.print(b);
+    lcd.print("       ");
+    delay(15);
+
+    if ( customKey == 'C')
+    {
+      lcd.clear();
+      kondisi = 1;
+
+    }
+
+  }
+  while (kondisi == 3)
+  {
+    long timer;
+    int jarak;
+
+    char customKey = customKeypad.getKey();
+
+    digitalWrite(TRIGPIN, LOW);
+    delayMicroseconds(2);
+    digitalWrite(TRIGPIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIGPIN, LOW);
+
+    timer = pulseIn(ECHOPIN, HIGH);
+    jarak = timer / 58;
+
+
+    lcd.setCursor(0, 0);
+    lcd.print("Jarak = ");
+    lcd.print(jarak);
+    lcd.print(" cm");
+
+    if ( customKey == 'C')
+    {
+      lcd.clear();
+      kondisi = 1;
+    }
+  }
+  while (kondisi == 4)
+  {
+    char customKey = customKeypad.getKey();
+
+    lcd.setCursor(0, 0);
+    lcd.print("Segmen count up");
+    lcd.setCursor(0, 1);
+    lcd.print("Naik-Naik");
+    display.showNumberDec(count, true);
+
+    for (int i = 0 ; i < 1000; i++)
+    {
+      delay(1);
+      if (customKey == 'C')
+      {
+        kondisi = 1;
+        count = 0;
+        lcd.clear();
+        break;
+      }
+
+    }
+    count++;
+  }
+  while (kondisi == 5)
+  {
+    char customKey = customKeypad.getKey();
+    display.showNumberDec(count, true);
+    lcd.setCursor(0, 0);
+    lcd.print("Segmen counting down");
+
+
+    if (customKey == 'A')
+    {
+      kondisi = 6;
+    }
+    if (customKey == 'C')
+    {
+      count = 9999;
+    }
+    if (customKey == 'D')
+    {
+      kondisi = 1;
+      display.showNumberDec(total, true);
+    }
+  }
+
+  while (kondisi == 6 )
+  {
+    display.showNumberDec(count, true);
+    char customKey = customKeypad.getKey();
+    count--;
+    if  (customKey == 'B')
+    {
+      kondisi = 5;
+    }
+    for (int i = 0 ; i < 500; i++)
+    {
+      char customKey = customKeypad.getKey();
+      delay(1);
+      if  (customKey == 'B')
+      {
+        kondisi = 5;
+      }
+    }
+  }
+}
